@@ -1,1 +1,2 @@
-# Projeto-integrador-4-semestre
+# Projeto integrador do 4º Semestre
+## integração dos componentes do projeto
