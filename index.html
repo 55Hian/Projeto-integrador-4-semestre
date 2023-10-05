@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>P1-4SEM</title>
+    <link rel="stylesheet" href="./reset.css">
+    <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+
+    <header>
+
+    <h1 class="tituloDePagina">DASHBOARD</h1>
+    <h2 class="subTituloDePagina">Sensoriamento e analise de pista</h2>
+
+
+    </header>
+
+    <main>
+        <article id="sensoresAcionados">
+            <h2 class="subTituloDePagina">Sensores acionados</h2>
+
+            <section id="containerSinaleiros">
+                <div class="sinaleiros"><p>sensor 1</p></div>
+                <div class="sinaleiros"><p>sensor 2</p></div>
+                <div class="sinaleiros"><p>sensor 3</p></div>
+                <div class="sinaleiros"><p>sensor 4</p></div>
+            </section>
+        </article>
+
+        <article id="distanciaInstalacaoSensores">
+            <h2 class="subTituloDePagina">Distancia de instalação dos sensores</h2>
+            <section id="containerSinaleiros">
+                <div class="sinaleiros"><p>distancia 1</p></div>
+                <div class="sinaleiros"><p>distancia 2</p></div>
+                <div class="sinaleiros"><p>distancia 3</p></div>
+                <div class="sinaleiros"><p>distancia 4</p></div>
+            </section>
+        </article>
+
+        <article id="tempoAcionamentoSensores">
+            <h2 class="subTituloDePagina">Tempo de acionamento dos sensores</h2>
+            <section id="containerSinaleiros">
+                <div class="sinaleiros"><p>tempo 1</p></div>
+                <div class="sinaleiros"><p>tempo 2</p></div>
+                <div class="sinaleiros"><p>tempo 3</p></div>
+                <div class="sinaleiros"><p>tempo 4</p></div>
+            </section>
+        </article>
+        <article id="graficosVelocidade">
+            <h2 class="subTituloDePagina">Velocidade</h2>
+            
+
+            <base target="_blank" />
+            <iframe
+              width="600"
+              height="300"
+              frameborder="0"
+              scrolling="no"
+              marginheight="0"
+              marginwidth="0"
+              src="./velocidade x tempo.html">
+            </iframe
+            ><br />
+            <small>
+              <a
+                href="./velocidade x tempo.html"
+                style="color:#0000FF;text-align:left">
+                See bigger map
+              </a>
+            </small>
+
+
+
+
+
+
+
+
+
+            <div class="grafico"></div>
+        </article>
+        <article id="graficosAceleração">
+            <h2 class="subTituloDePagina">aceleração</h2>
+
+
+            <base target="_blank" />
+            <iframe
+              width="600"
+              height="300"
+              frameborder="0"
+              scrolling="no"
+              marginheight="0"
+              marginwidth="0"
+              src="./velocidade x aceleracao.html">
+            </iframe
+            ><br />
+            <small>
+              <a
+                href="./velocidade x aceleracao.html"
+                style="color:#0000FF;text-align:left">
+                See bigger map
+              </a>
+            </small>
+            
+           
+        </article>        
+    </main>
+    <script src="./script.js"></script>
+</body>
+</html>
