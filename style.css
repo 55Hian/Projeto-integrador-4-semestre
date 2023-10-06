@@ -15,15 +15,16 @@ body{
 
 main{
     display: flex;
-    justify-content: space-evenly;
+    justify-content: center;
     width: 100vw;
     flex-wrap: wrap;
+    
 }
 
 article{
     width: 30%;
     background-color: var(--cor-secundaria);
-    margin-bottom: 24px;
+    margin: 8px;
     
 }
 
@@ -41,6 +42,20 @@ article{
     justify-content: center;
     align-items: center;
     margin: 32px 4px;
+}
+
+.sinaleiros{
+    width: 75px;
+    height: 75px;
+    background-color: var(--cor-terciaria);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 32px 4px;
+}
+
+#sensoresAcionados .sinaleiros{
+    background-color:rgb(49, 141, 49);
 }
 
 h1{
