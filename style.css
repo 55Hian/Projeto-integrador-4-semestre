@@ -1,6 +1,58 @@
-:root{
-    --cor-primaria: #262626;
-    --cor-secundaria: #363636;
+.corpoDaPagina{
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    display: flex;
+    height: 100vh;
+    width: 100vw;
+    align-items: center;
+}
+
+.menuLateral{
+    height: 90vh;
+    width: 2vw;
+    background-color: gray;
+    color: gray;
+    font-size: 0px;
+    transition: width 0.5s, color 2s;
+    border-top-right-radius: 25px;
+    border-bottom-right-radius: 25px;
+    padding: 20px;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.menuLateral:hover{
+    width: 10vw;
+    color: black;
+    font-size: 15pt;
+
+}
+
+.menuLateral li{
+    padding: 20px 0px;
+}
+
+.telaInicial{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 88vw;
+}
+
+
+
+
+
+
+
+
+
+/* :root{
+    --cor-primaria: #fff;
+    --cor-secundaria: #fff;
     --cor-terciaria: #8C8C8C;
     --cor-quartenaria: #A6A6A6;
     --cor-quintenaria: #BFBFBF;
@@ -9,7 +61,7 @@
 body{
     font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
     background-color: var(--cor-primaria);
-    color: #fff;
+    color: #363636;
     text-align: center;
 }
 
@@ -69,4 +121,4 @@ h2{
     font-weight: bold;
     margin:16px
 }
-
+ */
