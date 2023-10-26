@@ -5,12 +5,593 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>P1-4SEM</title>
     <link rel="stylesheet" href="./reset.css">
-    <link rel="stylesheet" href="./style.css">
+    <link rel="stylesheet" href="./style-code.css">
 </head>
-<body class="body-corpo">    
-    <article class="corpoDaPagina">  
+<body >    
+    <article class="body-corpo"> 
+
         <section class="codigos">
-            <div class="code-container">
+                <h2>C++</h2>
+                <pre>
+                    <code>
+
+#include < HTTPClient.h >
+#include < Wifi.h >
+#include "string.h"
+
+const char* ssid     = "password";     // login wifi
+const char* password = "senha"; // senha wifi
+
+char *server = "script.google.com";  // Server URL
+char *GScriptId = "AKfycbye8VfN9Qht0_aURpzzfbEuEvZsewyC0cB8yV8z8UM3wf3wWbamld_tk-4GfwJPlZz47w"; //planilha teste
+
+WiFiClientSecure client;
+
+long tempoEnvio = 0;
+
+const int sensor1 = 14;  // define o pino do sensor (pino sem pull up interno)
+const int sensor2 = 16;  // define o pino do sensor
+const int sensor3 = 17;  // define o pino do sensor
+const int sensor4 = 18;  // define o pino do sensor
+const int sensor9 = 23; // define o pino do sensor
+
+const int led = 25  ; // define o pino do led
+
+boolean estadoSensor1;  //recebe leitura do pino do sensor
+boolean estadoSensor2;  //recebe leitura do pino do sensor
+boolean estadoSensor3;  //recebe leitura do pino do sensor
+boolean estadoSensor4;  //recebe leitura do pino do sensor
+
+
+
+
+boolean liberasensor1 = false;  //Limitador de processo de leitura dos sensores
+boolean liberasensor2 = false;  //Limitador de processo de leitura dos sensores
+boolean liberasensor3 = false;  //Limitador de processo de leitura dos sensores
+boolean liberasensor4 = false;  //Limitador de processo de leitura dos sensores
+
+
+
+boolean controleSensor1 = true; //limitador para inicio de processo
+
+
+boolean liberaCalculos = false; //limitador para inicio de calculos
+
+boolean acionamentoSensor1 = false; //Limitador do tipo cascata do processo de leitura dos sensores
+boolean acionamentoSensor2 = false; //Limitador do tipo cascata do processo de leitura dos sensores
+boolean acionamentoSensor3 = false; //Limitador do tipo cascata do processo de leitura dos sensores
+boolean acionamentoSensor4 = false; //Limitador do tipo cascata do processo de leitura dos sensores
+
+boolean acionamentoSensor9 = false; //Limitador do tipo cascata do processo de leitura dos sensores
+
+boolean acionaEnvioDeDados = false; //Aciona o envio dos dados
+
+boolean resetSistema = false;
+
+
+double tempoplacaligada = millis(); //Inicia função de tempo para verificação de logica
+
+double millisTempoSensor1 = millis(); //armazena tempo de leitura do sensor
+double millisTempoSensor2 = millis(); //armazena tempo de leitura do sensor
+double millisTempoSensor3 = millis(); //armazena tempo de leitura do sensor
+double millisTempoSensor4 = millis(); //armazena tempo de leitura do sensor
+double millisTempoSensor9 = millis(); //armazena tempo de leitura do sensor
+
+double millisIniciaProcesso = millis(); //Inicia função millis para comparador de processo
+
+double tempoSensor9_ms;
+
+boolean inicioProcesso = false; //Limitador de processo de leitura dos sensores
+boolean verificaProcesso = true; //limitador de primeiro ciclo (inicio proceeso)
+boolean zeraTempoInicioProcesso = true; //limitador para reset de millis de inicio processo
+
+void enviodosdados();
+void calculos();
+void iniciarprocesso();
+
+void setup() {
+    Serial.begin(115200); // Inicia comunicação serial
+    tempoplacaligada = millis(); // armazena tempo de placa ao iniciar o processo
+    
+    Serial.println("Projeto:          PI-4SEM-PT01");
+    Serial.println("Versão:           0.1.3");
+    Serial.println("Data:             20/09/2023");
+    Serial.println("Autor:            Hian A. Damaceno");
+    Serial.println("Copyright notice: Código de sensoriamento de pista e envio de dados para nuvem.");
+    Serial.println(" ");
+    Serial.println("Iniciando parametrização do sistema");
+    Serial.println(" ");
+
+    Serial.print("Conectando a rede Wifi: ");
+    Serial.println(ssid);
+    Serial.flush();
+    WiFi.begin(ssid, password);
+    Serial.println("");
+    
+    while (WiFi.status() != WL_CONNECTED){
+    delay(500);
+    Serial.print(".");
+    }
+
+    Serial.println("");
+    Serial.println("WiFi connected");
+    Serial.println("IP address: ");
+    Serial.println(WiFi.localIP());
+    Serial.println("");
+    
+    pinMode(sensor1, INPUT_PULLUP); //Define os pinos de sensores como entradas de sinal digital
+    pinMode(sensor2, INPUT_PULLUP); //Define os pinos de sensores como entradas de sinal digital
+    pinMode(sensor3, INPUT_PULLUP); //Define os pinos de sensores como entradas de sinal digital
+    pinMode(sensor4, INPUT_PULLUP); //Define os pinos de sensores como entradas de sinal digital
+    pinMode(sensor9, INPUT_PULLUP); //Define os pinos de sensores como entradas de sinal digital
+    pinMode(led, OUTPUT); //Degine pino de indicador visual como saida
+
+
+    delay(2000);//Espera um tempo para se conectar no WiFi
+
+    liberasensor1 = false;  //Limitador de processo de leitura dos sensores
+    liberasensor2 = false;  //Limitador de processo de leitura dos sensores
+    liberasensor3 = false;  //Limitador de processo de leitura dos sensores
+    liberasensor4 = false;  //Limitador de processo de leitura dos sensores
+
+    acionamentoSensor1 = false; //Limitador do tipo cascata do processo de leitura dos sensores
+    acionamentoSensor2 = false; //Limitador do tipo cascata do processo de leitura dos sensores
+    acionamentoSensor3 = false; //Limitador do tipo cascata do processo de leitura dos sensores
+    acionamentoSensor4 = false; //Limitador do tipo cascata do processo de leitura dos sensores
+        
+    inicioProcesso = false;
+    verificaProcesso = true;
+    zeraTempoInicioProcesso = true;
+    controleSensor1 = true;
+
+    Serial.println("Parametrização do sistema concluida");
+    Serial.println(" ");
+}
+
+void loop() {
+
+iniciarprocesso();
+
+    if (inicioProcesso == true) { // se o processo esta pronto para iniciar
+    
+    digitalWrite(led, HIGH);  // indicador visual de inicio de processo
+    
+    if (controleSensor1 == true) { // se o sensor 1 esta liberado para atuar
+        Serial.println("Sistema de leitura iniciado com sucesso!");
+        liberasensor1 = true; //liberar processo do sensor 1
+        controleSensor1 = false; // se o sensor 1 esta liberado para atuar, desabilitar metodo de controle do sensor 1
+    }
+
+    if (liberasensor1 == true) { // se o processo do sensor esta liberado, iniciar o processo
+
+        estadoSensor1 = digitalRead(sensor1); // realizar leitura do sensor
+
+        if (estadoSensor1 == 0) { // se o sensor envio sinal
+
+        acionamentoSensor1 = true;  // variavel que será enviada para nuvem, sensor foi acionado
+        millisTempoSensor1 = millis();  // armazenar tempo em que o sensor foi acionado
+        liberasensor2 = true; //liberar processo do proximo sensor
+
+        Serial.println("Sensor 1");
+        Serial.println(millisTempoSensor1);
+        Serial.println("-----------------");
+
+        liberasensor1 = false; // encerrar processo do sensor
+
+        }
+    }
+
+    if (liberasensor2 == true) { // se o processo do sensor esta liberado, iniciar o processo
+
+        estadoSensor2 = digitalRead(sensor2); // realizar leitura do sensor
+
+        if (estadoSensor2 == 0) { // se o sensor envio sinal
+
+        acionamentoSensor2 = true;  // variavel que será enviada para nuvem, sensor foi acionado
+        millisTempoSensor2 = millis();  // armazenar tempo em que o sensor foi acionado
+        liberasensor3 = true; //liberar processo do proximo sensor
+
+        Serial.println("Sensor 2");
+        Serial.println(millisTempoSensor2);
+        Serial.println("-----------------");
+
+        liberasensor2 = false;  // encerrar processo do sensor
+
+        }
+    }
+
+    if (liberasensor3 == true) { // se o processo do sensor esta liberado, iniciar o processo
+
+        estadoSensor3 = digitalRead(sensor3); // realizar leitura do sensor
+
+        if (estadoSensor3 == 0) { // se o sensor envio sinal
+
+        acionamentoSensor3 = true;  // variavel que será enviada para nuvem, sensor foi acionado
+        millisTempoSensor3 = millis();  // armazenar tempo em que o sensor foi acionado
+        liberasensor4 = true; //liberar processo do proximo sensor
+
+        Serial.println("Sensor 3");
+        Serial.println(millisTempoSensor3);
+        Serial.println("-----------------");
+
+        liberasensor3 = false;  // encerrar processo do sensor
+
+        }
+    }
+
+    if (liberasensor4 == true) {
+
+        estadoSensor4 = digitalRead(sensor4);
+
+        if (estadoSensor4 == 0) {
+
+        acionamentoSensor4 = true;
+        millisTempoSensor4 = millis();
+        liberaCalculos = true;
+
+        Serial.println("Sensor 4");
+        Serial.println(millisTempoSensor4);
+        Serial.println("-----------------");
+
+        liberasensor4 = false;
+
+        }
+    }
+        
+    if (liberaCalculos == true) {
+
+        calculos();
+        
+        liberaCalculos = false;
+        acionaEnvioDeDados = true;
+        inicioProcesso = false;
+    }
+    }
+    if(acionaEnvioDeDados == true){
+
+    enviodosdados();
+    
+    resetSistema = true;
+    acionaEnvioDeDados = false;
+    }
+    
+    if(resetSistema == true){
+
+        digitalWrite(led, LOW);  // indicador visual de inicio de processo
+        
+        liberasensor1 = false;  //Limitador de processo de leitura dos sensores
+        liberasensor2 = false;  //Limitador de processo de leitura dos sensores
+        liberasensor3 = false;  //Limitador de processo de leitura dos sensores
+        liberasensor4 = false;  //Limitador de processo de leitura dos sensores
+
+        acionamentoSensor1 = false; //Limitador do tipo cascata do processo de leitura dos sensores
+        acionamentoSensor2 = false; //Limitador do tipo cascata do processo de leitura dos sensores
+        acionamentoSensor3 = false; //Limitador do tipo cascata do processo de leitura dos sensores
+        acionamentoSensor4 = false; //Limitador do tipo cascata do processo de leitura dos sensores
+
+        inicioProcesso = true;
+        verificaProcesso = true;
+        zeraTempoInicioProcesso = true;
+        controleSensor1 = true;
+
+        Serial.println("Reiniciando sistema de leitura leitura.");
+
+        resetSistema = false;
+    } 
+}
+
+
+void iniciarprocesso(){
+
+    boolean estadoSensor9;  //recebe leitura do pino do sensor
+    
+    estadoSensor9 = digitalRead(sensor9); // Realiza leitura do pino 9 e inicia metodo 
+  
+    if (estadoSensor9 == 0 && verificaProcesso == true) { // se pino 9 enviou sinal e o processo pode ser iniciado
+  
+      if (zeraTempoInicioProcesso == true) { // se o tempo inicial do processo pode ser resetado
+  
+        millisIniciaProcesso = millis(); // Resetar tempo inicial do processo
+        zeraTempoInicioProcesso = false; // Indica que o tempo inicial do processo não pode mais ser resetado
+  
+      }
+  
+      if ((millis() - millisIniciaProcesso) > 3000) { // se o tempo de inicio do processo for maior que 3 segundos
+  
+        Serial.println("Iniciando sistema de leitura.");
+  
+        inicioProcesso = true; // processo pode ser iniciado
+        verificaProcesso = false; //Processo ja foi iniciado, metodo inicial pode ser desabilitado.
+  
+      }
+    } else { // se o botão não foi pressionado por 3 segundo
+  
+      millisIniciaProcesso = millis(); // resetar tempo de contagem do botão de inicio do processo
+    }
+  }
+
+
+  const double distanciaSensor1 = 0;  //armazena distancia fisica de instalação do sensor
+  const double distanciaSensor2 = 2;  //armazena distancia fisica de instalação do sensor
+  const double distanciaSensor3 = 4.5;  //armazena distancia fisica de instalação do sensor
+  const double distanciaSensor4 = 7.5;  //armazena distancia fisica de instalação do sensor
+  
+  
+  
+  double tempoSensor1_ms;
+  double tempoSensor2_ms;
+  double tempoSensor3_ms;
+  double tempoSensor4_ms;
+  
+  double velocidadeMediaSensor1;
+  double velocidadeMediaSensor2;
+  double velocidadeMediaSensor3;
+  double velocidadeMediaSensor4;
+  
+  double aceleracaoMediaSensor1;
+  double aceleracaoMediaSensor2;
+  double aceleracaoMediaSensor3;
+  double aceleracaoMediaSensor4;
+  
+  void calculos(){
+    double diferencaTempoPlaca = millisTempoSensor1 - tempoplacaligada;
+  
+    millisTempoSensor1 = millisTempoSensor1 - diferencaTempoPlaca;
+    millisTempoSensor2 = millisTempoSensor2 - diferencaTempoPlaca;
+    millisTempoSensor3 = millisTempoSensor3 - diferencaTempoPlaca;
+    millisTempoSensor4 = millisTempoSensor4 - diferencaTempoPlaca;
+  
+  
+    Serial.print("tempo no sensor 1 é de:");
+    Serial.print(millisTempoSensor1);
+    Serial.println(" milisegundos");
+  
+    Serial.print("tempo no sensor 2 é de:");
+    Serial.print(millisTempoSensor2);
+    Serial.println(" milisegundos");
+  
+    Serial.print("tempo no sensor 3 é de:");
+    Serial.print(millisTempoSensor3);
+    Serial.println(" milisegundos");
+  
+    Serial.print("tempo no sensor 4 é de:");
+    Serial.print(millisTempoSensor4);
+    Serial.println(" milisegundos");
+  
+    Serial.println("-----------------");
+  
+    tempoSensor1_ms = millisTempoSensor1 / 1000;
+    tempoSensor2_ms = millisTempoSensor2 / 1000;
+    tempoSensor3_ms = millisTempoSensor3 / 1000;
+    tempoSensor4_ms = millisTempoSensor4 / 1000;
+        
+    Serial.print("tempo no sensor 1 é de:");
+    Serial.print(tempoSensor1_ms);
+    Serial.println(" segundos");
+    Serial.print("tempo no sensor 2 é de:");
+    Serial.print(tempoSensor2_ms);
+    Serial.println(" segundos");
+  
+    Serial.print("tempo no sensor 3 é de:");
+    Serial.print(tempoSensor3_ms);
+    Serial.println(" segundos");
+  
+    Serial.print("tempo no sensor 4 é de:");
+    Serial.print(tempoSensor4_ms);
+    Serial.println(" segundos");
+  
+    Serial.println("-----------------");
+    velocidadeMediaSensor1 = 0;
+    Serial.print("velocidade no sensor 1 é de:");
+    Serial.print(velocidadeMediaSensor1);
+    Serial.println(" metros por segundos");
+  
+    velocidadeMediaSensor2 = (distanciaSensor2 - distanciaSensor1) / (tempoSensor2_ms - tempoSensor1_ms);
+    Serial.print("velocidade no sensor 2 é de:");
+    Serial.print(velocidadeMediaSensor2);
+    Serial.println(" metros por segundos");
+  
+    velocidadeMediaSensor3 = (distanciaSensor3 - distanciaSensor2) / (tempoSensor3_ms - tempoSensor2_ms);
+    Serial.print("velocidade no sensor 3 é de:");
+    Serial.print(velocidadeMediaSensor3);
+    Serial.println(" metros por segundos");
+  
+    velocidadeMediaSensor4 = (distanciaSensor4 - distanciaSensor3) / (tempoSensor4_ms - tempoSensor3_ms);
+    Serial.print("velocidade no sensor 4 é de:");
+    Serial.print(velocidadeMediaSensor4);
+    Serial.println(" metros por segundos");
+     
+    Serial.println("-----------------");
+      
+    aceleracaoMediaSensor1 = 0;
+    Serial.print("Aceleração no sensor 1 é de:");
+    Serial.print(aceleracaoMediaSensor1);
+    Serial.println(" metros por segundos²");
+  
+    aceleracaoMediaSensor2 = (velocidadeMediaSensor2 - velocidadeMediaSensor1) / (tempoSensor2_ms - tempoSensor1_ms);
+    Serial.print("Aceleração no sensor 2 é de:");
+    Serial.print(aceleracaoMediaSensor2);
+    Serial.println(" metros por segundos²");
+  
+    aceleracaoMediaSensor3 = (velocidadeMediaSensor3 - velocidadeMediaSensor2) / (tempoSensor3_ms - tempoSensor2_ms);
+    Serial.print("Aceleração no sensor 3 é de:");
+    Serial.print(aceleracaoMediaSensor3);
+    Serial.println(" metros por segundos²");
+    
+    aceleracaoMediaSensor4 = (velocidadeMediaSensor4 - velocidadeMediaSensor3) / (tempoSensor4_ms - tempoSensor3_ms);
+    Serial.print("Aceleração no sensor 4 é de:");
+    Serial.print(aceleracaoMediaSensor4);
+    Serial.println(" metros por segundos²");
+  }
+
+
+  const int httpsPort = 443;
+
+void enviodosdados(){
+  
+  HTTPClient http;
+
+  tempoEnvio = millis() - tempoEnvio;
+  String url = String("https://script.google.com") + "/macros/s/" + GScriptId + "/exec?" + 
+  "value1=" + acionamentoSensor1 + "&value2=" + acionamentoSensor2 + "&value3=" + acionamentoSensor3 + 
+  "&value4=" + acionamentoSensor4 + "&value5=" + tempoSensor1_ms + "&value6=" + tempoSensor2_ms + 
+  "&value7=" + tempoSensor3_ms + "&value8=" + tempoSensor4_ms + "&value9=" + velocidadeMediaSensor1 + 
+  "&value10=" + velocidadeMediaSensor2 + "&value11=" + velocidadeMediaSensor3 + "&value12=" + velocidadeMediaSensor4 + 
+  "&value13=" + aceleracaoMediaSensor1 + "&value14=" + aceleracaoMediaSensor2 + "&value15=" + aceleracaoMediaSensor3 +
+   "&value16=" + aceleracaoMediaSensor4;
+  
+  tempoEnvio = millis();
+  
+  Serial.print("Making a request");
+  http.begin(url.c_str()); //Specify the URL and certificate
+  http.setFollowRedirects(HTTPC_STRICT_FOLLOW_REDIRECTS);
+  int httpCode = http.GET();
+  String payload;
+  if (httpCode > 0) { //Check for the returning code
+    payload = http.getString();
+
+    Serial.println(httpCode);
+    Serial.println(payload);
+    //     testdrawstyles(payload);
+    //if (httpCode == 200 or httpCode == 201) tempPing.Saida(0);
+  }
+  else {
+    Serial.println("Error on HTTP request");
+  }
+  http.end();
+}
+
+                    </code>
+                </pre>
+        </section>
+
+        <section class="codigos">
+            <h2>Javascript (Google App Script)</h2>
+            <pre>
+                <code>
+function doGet(e) {
+    Logger.log( JSON.stringify(e) ); // view parameters
+    var result = 'Ok'; // assume success
+    if (e.parameter == 'undefined') {
+        result = 'No Parameters';
+    }
+    else {
+        var sheet_id = '19oGUnZkvEd7wNK-iHH990lIjQks-q8NBsx2hke_cePA';  // Spreadsheet ID
+        var sheet = SpreadsheetApp.openById(sheet_id).getActiveSheet(); // get Active sheet
+        var newRow = sheet.getLastRow() + 1;
+        var rowData = [];
+        d = new Date();
+        rowData[0] = d; // Timestamp in column A
+        rowData[1] = d.toLocaleTimeString(); // Timestamp in column A
+    
+        for (var param in e.parameter) {
+        Logger.log('In for loop, param=' + param);
+        var value = stripQuotes(e.parameter[param]);
+        Logger.log(param + ':' + e.parameter[param]);
+        switch (param) {
+            case 'value1': //Parameter 1, It has to be updated in Column in Sheets in the code, orderwise
+            rowData[2] = value; //Value in column A
+            result = 'Written on column A';
+            break;
+    
+            case 'value2': //Parameter 2, It has to be updated in Column in Sheets in the code, orderwise
+            rowData[3] = value; //Value in column B
+            result += ' Written on column B';
+            break;
+    
+            case 'value3': //Parameter 3, It has to be updated in Column in Sheets in the code, orderwise
+            rowData[4] = value; //Value in column C
+            result += ' Written on column C';
+            break;
+    
+            case 'value4': //Parameter 4, It has to be updated in Column in Sheets in the code, orderwise
+            rowData[5] = value; //Value in column D
+            result += ' Written on column D';
+            break;
+    
+            case 'value5': //Parameter 5, It has to be updated in Column in Sheets in the code, orderwise
+            rowData[6] = value; //Value in column E
+            result += ' Written on column E';
+            break;
+    
+            case 'value6': //Parameter 6, It has to be updated in Column in Sheets in the code, orderwise
+            rowData[7] = value; //Value in column F
+            result += ' Written on column F';
+            break;
+    
+            case 'value7': //Parameter 7, It has to be updated in Column in Sheets in the code, orderwise
+            rowData[8] = value; //Value in column G
+            result += ' Written on column G';
+            break;
+    
+            case 'value8': //Parameter 8, It has to be updated in Column in Sheets in the code, orderwise
+            rowData[9] = value; //Value in column H
+            result += ' Written on column H';
+            break;
+    
+            case 'value9': //Parameter 9, It has to be updated in Column in Sheets in the code, orderwise
+            rowData[10] = value; //Value in column I
+            result += ' Written on column I';
+            break;
+    
+            case 'value10': //Parameter 10, It has to be updated in Column in Sheets in the code, orderwise
+            rowData[11] = value; //Value in column J
+            result += ' Written on column J';
+            break;
+    
+            case 'value11': //Parameter 11, It has to be updated in Column in Sheets in the code, orderwise
+            rowData[12] = value; //Value in column K
+            result += ' Written on column K';
+            break;
+    
+            case 'value12': //Parameter 12, It has to be updated in Column in Sheets in the code, orderwise
+            rowData[13] = value; //Value in column L
+            result += ' Written on column L';
+            break;
+    
+            case 'value13': //Parameter 13, It has to be updated in Column in Sheets in the code, orderwise
+            rowData[14] = value; //Value in column M
+            result += ' Written on column M';
+            break;
+    
+            case 'value14': //Parameter 14, It has to be updated in Column in Sheets in the code, orderwise
+            rowData[15] = value; //Value in column N
+            result += ' Written on column N';
+            break;
+    
+            case 'value15': //Parameter 15, It has to be updated in Column in Sheets in the code, orderwise
+            rowData[16] = value; //Value in column O
+            result += ' Written on column O';
+            break;
+    
+            case 'value16': //Parameter 16, It has to be updated in Column in Sheets in the code, orderwise
+            rowData[17] = value; //Value in column P
+            result += ' Written on column P';
+            break;
+    
+            default:
+            result = "unsupported parameter";
+        }
+        }
+        Logger.log(JSON.stringify(rowData));
+        // Write new row below
+        var newRange = sheet.getRange(newRow, 1, 1, rowData.length);
+        newRange.setValues([rowData]);
+    }
+    // Return result of operation
+    return ContentService.createTextOutput(result);
+    }
+    function stripQuotes( value ) {
+    return value.replace(/^["']|['"]$/g, "");
+    }
+                      
+
+                    </code>
+                </pre>
+        </section>
+
+
+        <section class="codigos">
                 <h2>Python</h2>
                 <pre>
                     <code>
@@ -119,8 +700,9 @@ plt.show()
                         
                     </code>
                 </pre>
-            </div>
         </section>
+
+
     </article>
 
     <script src="./script.js"></script>
