@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,26 +8,50 @@
     <link rel="stylesheet" href="./reset.css">
     <link rel="stylesheet" href="./style.css">
 </head>
-<body>    
-    <article class="corpoDaPagina">  
+
+<body>
+    <article class="corpoDaPagina">
         <section class="menuLateral">
             <ul>
-                <li><h2>GRUPO 2</h2></li>
+                <li>
+                    <h2>GRUPO 2</h2>
+                </li>
                 <li><a href="./index.html">Home</a></li>
                 <li><a href="./tempo.html">Tempo</a></li>
                 <li><a href="./distancia.html">Distancia</a></li>
                 <li><a href="./velocidade.html">Velocidade</a></li>
                 <li><a href="./aceleracao.html">Aceleração</a></li>
+                <li><a href="./resultado.html">Resultado</a></li>
             </ul>
         </section>
         <section class="corpoDashBoard">
-          <section class="telaInicial">
-          <header>
-              <h1 class="tituloDePagina">DASHBOARD</h1>
-              <h2 class="subTituloDePagina">Sensoriamento e analise de pista</h2>
-          </header>
-        </section>
+            <section class="telaInicial">
+                <header>
+                    <h1 class="tituloDePagina">DASHBOARD</h1>
+                    <h2 class="subTituloDePagina">Sensoriamento e analise de pista</h2>
+                </header>
 
+            </section>
+
+            <form action="" class="times">
+                <div class="formulario">
+                    <div class="controleform">
+                        <label for="nome">Nome do primeiro grupo</label>
+                        <input type="text" id="nome" value="Equipe 1" disabled>
+                    </div>
+
+                    <div class="controleform">
+                        <label for="nome">Nome do segundo grupo</label>
+                        <input type="text" id="nome" value="Equipe 2" disabled>
+                    </div>
+                </div>
+                <div class="formularioB">
+                    <div class="controleform">
+                        <button type="submit" value="Enviar" disabled>Enviar</button>
+                    </div>
+
+                </div>
+            </form>
         </section>
 
 
@@ -35,4 +60,5 @@
 
     <script src="./script.js"></script>
 </body>
+
 </html>
