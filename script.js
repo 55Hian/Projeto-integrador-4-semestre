@@ -53,9 +53,9 @@ function compararDados() {
     // Exemplo de comparação
     if (tempoSensor5Dados1 < tempoSensor5Dados2) {
       console.log("time 1");
-      vencendor.innerHTML = 'Time 1 Com um tempo de ' + tempoSensor5Dados1 + " segundos "
+      vencendor.innerHTML = 'Time 1 com um tempo de ' + tempoSensor5Dados1 + " segundos "
     } else if(tempoSensor5Dados1 > tempoSensor5Dados2){
-      vencendor.innerHTML = 'Time 2 Com um tempo de ' + tempoSensor5Dados2 + " segundos "
+      vencendor.innerHTML = 'Time 2 com um tempo de ' + tempoSensor5Dados2 + " segundos "
     } else{ 
       vencendor.innerHTML = 'Houve empate na corridas'
 
