@@ -57,7 +57,7 @@ function compararDados() {
     } else if(tempoSensor5Dados1 > tempoSensor5Dados2){
       vencendor.innerHTML = 'Time 2 com um tempo de ' + tempoSensor5Dados2 + " segundos "
     } else{ 
-      vencendor.innerHTML = 'Houve empate na corridas'
+      vencendor.innerHTML = 'Houve empate na corrida'
 
 
     }
