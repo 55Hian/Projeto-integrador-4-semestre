@@ -41,11 +41,11 @@ getJSON('dados_tabela2.json', function(err, data) {
 
 function compararDados() {
   // Verifica se ambos os conjuntos de dados foram carregados
-  if (dados1.tempoSensor5 !== undefined && dados2.tempoSensor5 !== undefined) {
+  if (dados1.tempoSensor4 !== undefined && dados2.tempoSensor4 !== undefined) {
 
     // Comparar os valores de "tempoSensor5"
-    var tempoSensor5Dados1 = dados1.tempoSensor5;
-    var tempoSensor5Dados2 = dados2.tempoSensor5;
+    var tempoSensor5Dados1 = dados1.tempoSensor4;
+    var tempoSensor5Dados2 = dados2.tempoSensor4;
 
     console.log("tempoSensor5Dados1:", tempoSensor5Dados1);
     console.log("tempoSensor5Dados2:", tempoSensor5Dados2);
